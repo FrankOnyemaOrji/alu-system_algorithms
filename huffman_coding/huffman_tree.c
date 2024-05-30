@@ -10,19 +10,19 @@
  */
 void freeNestedNode(void *data)
 {
-	binary_tree_node_t *a_data = NULL;
-	symbol_t *b_data = NULL;
+	binary_tree_node_t *n_data = NULL;
+	symbol_t *s_data = NULL;
 
-	a_data = (binary_tree_node_t *)data;
+	n_data = (binary_tree_node_t *)data;
 
-	if (a_data)
+	if (n_data)
 	{
-		b_data = (symbol_t *)(a_data->data);
+		s_data = (symbol_t *)(n_data->data);
 
-		if (b_data)
-			free(b_data);
+		if (s_data)
+			free(s_data);
 
-		free(a_data);
+		free(n_data);
 	}
 }
 

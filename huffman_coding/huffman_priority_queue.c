@@ -4,22 +4,22 @@
 /**
  * freq_cmp - Compares the frequencies of two symbols for heap ordering.
  *
- * @fqa: Pointer to the first symbol.
- * @fqb: Pointer to the second symbol.
+ * @fq1: Pointer to the first symbol.
+ * @fq2: Pointer to the second symbol.
  *
  * Return: The difference in frequencies (f1 - f2).
  */
-int freq_cmp(void *fqa, void *fqb)
+int freq_cmp(void *fq1, void *fq2)
 {
-	symbol_t *symla, *symlb;
-	binary_tree_node_t *nodea, *nodeb;
+	symbol_t *sym1, *sym2;
+	binary_tree_node_t *node1, *node2;
 
-	nodea = (binary_tree_node_t *)fqa;
-	nodeb = (binary_tree_node_t *)fqb;
-	symla = (symbol_t *)nodea->data;
-	symlb = (symbol_t *)nodeb->data;
+	node1 = (binary_tree_node_t *)fq1;
+	node2 = (binary_tree_node_t *)fq2;
+	sym1 = (symbol_t *)node1->data;
+	sym2 = (symbol_t *)node2->data;
 
-	return ((int)symla->freq - (int)symlb->freq);
+	return ((int)sym1->freq - (int)sym2->freq);
 }
 
 /**
@@ -32,7 +32,7 @@ int freq_cmp(void *fqa, void *fqb)
  */
 heap_t *huffman_priority_queue(char *data, size_t *freq, size_t size)
 {
-	symbol_t *syml = NULL;
+	symbol_t *sym = NULL;
 	heap_t *new_heap = NULL;
 	binary_tree_node_t *new_node = NULL;
 	size_t index = 0;
@@ -45,12 +45,12 @@ heap_t *huffman_priority_queue(char *data, size_t *freq, size_t size)
 
 	while (index < size)
 	{
-		syml = symbol_create(data[index], freq[index]);
-		new_node = binary_tree_node(NULL, syml);
-
+		sym = symbol_create(data[index], freq[index]);
+		new_node = binary_tree_node(NULL, sym);
+		/* heap_insert(new_heap, new_node); */
 		if (!heap_insert(new_heap, new_node))
 		{
-			free(syml);
+			free(sym);
 			free(new_node);
 			return (NULL);
 		}

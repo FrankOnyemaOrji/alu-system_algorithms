@@ -1,23 +1,22 @@
 #include "huffman.h"
 
 /**
- * symbol_create - Creates a symbol data structure.
- * @data: The data to be stored in the structure.
- * @freq: Its associated frequency.
- *
- * Return: A pointer to the created symbol structure, or NULL if it fails.
+ * symbol_create - function that creates a symbol_t data structure
+ * @data: data to be stored in the structure
+ * @freq: associated frequency
+ * Return: pointer to the created structure, or NULL if it fails
  */
 symbol_t *symbol_create(char data, size_t freq)
 {
-symbol_t *newsymbol;
+	symbol_t *new;
 
-newsymbol = malloc(sizeof(symbol_t));
+	new = malloc(sizeof(symbol_t));
 
-if (!newsymbol)
+	if (!new)
+		return (NULL);
 
-return (NULL);
-newsymbol->data = data;
-newsymbol->freq = freq;
+	new->data = data;
+	new->freq = freq;
 
-return (newsymbol);
+	return (new);
 }
