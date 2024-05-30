@@ -3,13 +3,13 @@
 
 /**
  * huffman_extract_and_insert - extracts the two nodes of
- *the priority queue and insert a new one
+ *								the priority queue and insert a new one
  * @priority_queue:  pointer to the priority queue to extract from
  * Return: 1 on success or 0 on failure
  */
 int huffman_extract_and_insert(heap_t *priority_queue)
 {
-	binary_tree_node_t *new_node, *nodea, *nodeb;
+	binary_tree_node_t *new_node, *node1, *node2;
 	symbol_t *symbol;
 	size_t combined_freq;
 
@@ -19,18 +19,18 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 	if (priority_queue->size < 2)
 		return (0);
 
-	nodea = heap_extract(priority_queue);
-	nodeb = heap_extract(priority_queue);
+	node1 = heap_extract(priority_queue);
+	node2 = heap_extract(priority_queue);
 
-	if (!nodea || !nodeb)
+	if (!node1 || !node2)
 	{
-		free(nodea);
-		free(nodeb);
+		free(node1);
+		free(node2);
 		return (0);
 	}
 
-	combined_freq = ((symbol_t *)nodea->data)->freq +
-														((symbol_t *)nodeb->data)->freq;
+	combined_freq = ((symbol_t *)node1->data)->freq +
+														((symbol_t *)node2->data)->freq;
 
 	symbol = symbol_create(-1, combined_freq);
 	new_node = binary_tree_node(NULL, symbol);
@@ -40,10 +40,10 @@ int huffman_extract_and_insert(heap_t *priority_queue)
 		free(symbol);
 		return (0);
 	}
-	new_node->left = nodea;
-	new_node->right = nodeb;
-	nodea->parent = new_node;
-	nodeb->parent = new_node;
+	new_node->left = node1;
+	new_node->right = node2;
+	node1->parent = new_node;
+	node2->parent = new_node;
 	heap_insert(priority_queue, new_node);
 	return (1);
 }
