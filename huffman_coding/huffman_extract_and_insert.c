@@ -1,49 +1,48 @@
-#include "huffman.h"
 #include "heap.h"
-
+#include "huffman.h"
 /**
- * huffman_extract_and_insert - extracts the two nodes of
- *								the priority queue and insert a new one
- * @priority_queue:  pointer to the priority queue to extract from
+ * huffman_extract_and_insert- A function that extracts the two nodes of
+ * the priority queue and insert a new one
+ * @priority_queue: A pointer to the priority queue to extract from
  * Return: 1 on success or 0 on failure
  */
 int huffman_extract_and_insert(heap_t *priority_queue)
 {
-	binary_tree_node_t *new_node, *node1, *node2;
+	binary_tree_node_t *first_node = NULL, *second_node = NULL;
+	size_t freq = 0;
 	symbol_t *symbol;
-	size_t combined_freq;
+	binary_tree_node_t *node, *nested;
 
-	if (!priority_queue || !priority_queue->root)
+	if (priority_queue == NULL)
+		return (1);
+
+	first_node = (binary_tree_node_t *) heap_extract(priority_queue);
+	if (priority_queue->size > 0)
+		second_node =
+		    (binary_tree_node_t *) heap_extract(priority_queue);
+	if (first_node == NULL || second_node == NULL)
 		return (0);
-	/* Check if there are at least two nodes in the priority queue */
-	if (priority_queue->size < 2)
+	freq = ((symbol_t *) first_node->data)->freq +
+	    ((symbol_t *) second_node->data)->freq;
+
+	symbol = symbol_create(-1, freq);
+	if (symbol == NULL)
 		return (0);
-
-	node1 = heap_extract(priority_queue);
-	node2 = heap_extract(priority_queue);
-
-	if (!node1 || !node2)
+	nested = binary_tree_node(NULL, symbol);
+	if (nested == NULL)
+		return (0);
+	if (first_node)
 	{
-		free(node1);
-		free(node2);
-		return (0);
+		nested->left = first_node;
+		first_node->parent = nested;
 	}
-
-	combined_freq = ((symbol_t *)node1->data)->freq +
-														((symbol_t *)node2->data)->freq;
-
-	symbol = symbol_create(-1, combined_freq);
-	new_node = binary_tree_node(NULL, symbol);
-
-	if (new_node == NULL)
+	if (second_node)
 	{
-		free(symbol);
-		return (0);
+		nested->right = second_node;
+		second_node->parent = nested;
 	}
-	new_node->left = node1;
-	new_node->right = node2;
-	node1->parent = new_node;
-	node2->parent = new_node;
-	heap_insert(priority_queue, new_node);
+	node = heap_insert(priority_queue, nested);
+	if (node == NULL)
+		return (0);
 	return (1);
 }

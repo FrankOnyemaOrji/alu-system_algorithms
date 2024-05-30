@@ -2,60 +2,55 @@
 #include "heap.h"
 
 /**
- * freq_cmp - Compares the frequencies of two symbols for heap ordering.
+ * symbol_cmp - Compares two symbols
  *
- * @fq1: Pointer to the first symbol.
- * @fq2: Pointer to the second symbol.
+ * @p1: First pointer
+ * @p2: Second pointer
  *
- * Return: The difference in frequencies (f1 - f2).
+ * Return: Difference between the two symbols
  */
-int freq_cmp(void *fq1, void *fq2)
+static int symbol_cmp(void *p1, void *p2)
 {
-	symbol_t *sym1, *sym2;
-	binary_tree_node_t *node1, *node2;
+	binary_tree_node_t *n1, *n2;
+	int c1, c2;
 
-	node1 = (binary_tree_node_t *)fq1;
-	node2 = (binary_tree_node_t *)fq2;
-	sym1 = (symbol_t *)node1->data;
-	sym2 = (symbol_t *)node2->data;
-
-	return ((int)sym1->freq - (int)sym2->freq);
+	n1 = (binary_tree_node_t *) p1;
+	n2 = (binary_tree_node_t *) p2;
+	c1 = ((symbol_t *) n1->data)->freq;
+	c2 = ((symbol_t *) n2->data)->freq;
+	return (c1 - c2);
 }
 
 /**
- * huffman_priority_queue - creates a priority queue
- *							for the Huffman coding algorithm
- * @data: array of characters of size size
- * @freq: array containing the associated frequencies (of size size too)
- * @size: size of queue
- * Return: pointer to the created min heap (also called priority queue)
+ * huffman_priority_queue -  A function that creates a priority queue for the
+ * Huffman coding algorithm
+ * @data: An array of characters of size `size`
+ * @freq: An array containing the associated frequencies (of size `size`)
+ * @size: size of the array
+ * Return: A pointer to the created min priority_queue_heap (also called
+ * priority queue)
  */
 heap_t *huffman_priority_queue(char *data, size_t *freq, size_t size)
 {
-	symbol_t *sym = NULL;
-	heap_t *new_heap = NULL;
-	binary_tree_node_t *new_node = NULL;
-	size_t index = 0;
+	heap_t *priority_queue_heap;
+	size_t i = 0;
+	symbol_t *symbol;
+	binary_tree_node_t *node, *nested;
 
-	new_heap = heap_create(freq_cmp);
-
-	if (!new_heap)
+	priority_queue_heap = heap_create(symbol_cmp);
+	if (priority_queue_heap == NULL || data == NULL || freq == NULL || size == 0)
 		return (NULL);
-	new_heap->root = NULL;
-
-	while (index < size)
+	for (i = 0; i < size; i++)
 	{
-		sym = symbol_create(data[index], freq[index]);
-		new_node = binary_tree_node(NULL, sym);
-		/* heap_insert(new_heap, new_node); */
-		if (!heap_insert(new_heap, new_node))
-		{
-			free(sym);
-			free(new_node);
+		symbol = symbol_create(data[i], freq[i]);
+		if (symbol == NULL)
 			return (NULL);
-		}
-		index++;
+		nested = binary_tree_node(NULL, symbol);
+		if (nested == NULL)
+			return (NULL);
+		node = heap_insert(priority_queue_heap, nested);
+		if (node == NULL)
+			return (NULL);
 	}
-
-	return (new_heap);
+	return (priority_queue_heap);
 }
