@@ -1,77 +1,102 @@
 #include "heap.h"
 
-void heapify_down(heap_t *heap, binary_tree_node_t *node);
-void detach_node(binary_tree_node_t *node);
-
 /**
-* heap_extract - extracts the root value of a min heap
-* @heap: pointer to heap structure
-* Return: pointer to data or NULL
-*/
+ * heapify_down - Maintains the heap property by moving down the tree.
+ * @heap: Pointer to the heap.
+ */
+static void heapify_down(heap_t *heap)
+{
+binary_tree_node_t *current, *child;
+void *temp;
+
+if (!heap || !heap->root)
+
+return;
+
+current = heap->root;
+
+while (current->left)
+{
+child = current->left;
+
+if (current->right && heap->data_cmp(current->right->data, current->left->data) < 0)
+
+child = current->right;
+
+if (heap->data_cmp(current->data, child->data) > 0)
+
+{
+temp = current->data;
+current->data = child->data;
+child->data = temp;
+current = child;
+
+}
+
+else
+
+{
+
+break;
+}
+}
+}
+/**
+ * heap_extract - Extracts the root value of a Min Binary Heap.
+ * @heap: Pointer to the heap.
+ * Return: A pointer to the data that was stored in the root node of the heap.
+ */
 void *heap_extract(heap_t *heap)
 {
-	binary_tree_node_t *node = NULL;
+binary_tree_node_t *root, *last;
+void *data;
 
-	void *data = NULL;
+if (!heap || !heap->root)
 
+return (NULL);
 
-	if (!heap || !heap->root)
-		return (NULL);
+root = heap->root;
+data = root->data;
 
-	data = heap->root->data;
-	node = heap->root;
-
-	if (heap->size == 1)
-	{
-		heap->root = NULL;
-	}
-	else
-	{
-		heapify_down(heap, node);
-		detach_node(node);
-	}
-
-	free(node);
-	heap->size--;
-
-	return (data);
+last = root;
+while (last->left)
+{
+if (last->right && last->right->parent == last)
+last = last->right;
+else
+last = last->left;
 }
 
-/**
-* heapify_down - maintains heap property after extracting the root
-* @heap: pointer to heap structure
-* @node: pointer to the node where heapify starts
-*/
-void heapify_down(heap_t *heap, binary_tree_node_t *node)
+if (last != root)
 {
-	while (node->left || node->right)
-	{
-		binary_tree_node_t *child = (node->right &&
-		heap->data_cmp(node->left->data, node->right->data) < 0)
-									? node->left : node->right;
+last->parent->left = NULL;
+last->parent = root->parent;
+last->left = root->left;
+last->right = root->right;
 
-		if (heap->data_cmp(node->data, child->data) > 0)
-		{
-			node->data = child->data;
-			node = child;
-		}
-		else
-		{
-			break;
-		}
-	}
+if (root->left)
+root->left->parent = last;
+if (root->right)
+root->right->parent = last;
+
+if (root->parent)
+{
+if (root->parent->left == root)
+root->parent->left = last;
+else
+root->parent->right = last;
 }
-
-/**
-* detach_node - detaches a node from its parent
-* @node: pointer to the node to be detached
-*/
-void detach_node(binary_tree_node_t *node)
+else
 {
-	if (node->parent->left == node)
-		node->parent->left = NULL;
-	else
-		node->parent->right = NULL;
-
-	node->parent = NULL;
+heap->root = last;
+}
+heapify_down(heap);
+}
+else
+{
+heap->root = NULL;
+}
+free(root);
+heap->size--;
+return (data);
 }

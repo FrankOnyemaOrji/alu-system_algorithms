@@ -1,87 +1,67 @@
 #include "heap.h"
-
-
-void heap_insert_recursive(heap_t *heap,
-binary_tree_node_t *root, binary_tree_node_t *node);
-void heapify(heap_t *heap, binary_tree_node_t *node);
-
+#include <stdlib.h>
 
 /**
-* heap_insert - inserts new node into min heap
-* @heap: pointer to heap structure
-* @data: pointer to data
-* Return: pointer to new node or NULL
-*/
+ * heap_insert - Inserts a value into a Min Binary Heap.
+ * @heap: Pointer to the heap in which the node has to be inserted.
+ * @data: Pointer containing the data to store in the new node.
+ *
+ * Return: A pointer to the created binary_tree_node_t structure,
+ *         or NULL if it fails.
+ */
 binary_tree_node_t *heap_insert(heap_t *heap, void *data)
 {
-	binary_tree_node_t *node = NULL;
+binary_tree_node_t *new_node, *parent;
 
-	if (!heap)
-		return (NULL);
+if (!heap || !data)
+return (NULL);
 
-	node = binary_tree_node(NULL, data);
+new_node = binary_tree_node(NULL, data);
+if (!new_node)
 
-	if (!node)
-		return (NULL);
+return (NULL);
+  
+heap->size++;
 
-	if (!heap->root)
-	{
-		heap->root = node;
-	}
-	else
-	{
-		heap_insert_recursive(heap, heap->root, node);
-		heapify(heap, node);
-	}
-
-	heap->size++;
-
-	return (node);
+if (!heap->root)
+{
+heap->root = new_node;
+return (new_node);
 }
 
-/**
-* heap_insert_recursive - recursively inserts new node into min heap
-* @heap: pointer to heap structure
-* @root: current root
-* @node: pointer to node to insert
-*/
-void heap_insert_recursive(heap_t *heap,
-binary_tree_node_t *root, binary_tree_node_t *node)
+parent = heap->root;
+while (parent->left)
 {
-	if (!root->left)
-	{
-		root->left = node;
-		node->parent = root;
-	}
-	else if (!root->right)
-	{
-		root->right = node;
-		node->parent = root;
-	}
-	else if (heap->size % 2 == 0)
-	{
-		heap_insert_recursive(heap, root->left, node);
-	}
-	else
-	{
-		heap_insert_recursive(heap, root->right, node);
-	}
+if (!parent->right || heap->data_cmp(parent->left->data, parent->right->data) <= 0)
+{
+parent = parent->left;
+}
+else
+{
+parent = parent->right;
+}
 }
 
-/**
-* heapify - maintains heap property after insertion
-* @heap: pointer to heap structure
-* @node: pointer to node to heapify
-*/
-void heapify(heap_t *heap, binary_tree_node_t *node)
+new_node->parent = parent;
+if (!parent->left)
 {
-	void *tmp = NULL;
+parent->left = new_node;
+}
+else
+{
+parent->right = new_node;
+}
 
-	while (node->parent && heap->data_cmp(node->data, node->parent->data) < 0)
-	{
-		tmp = node->parent->data;
-		node->parent->data = node->data;
-		node->data = tmp;
-		node = node->parent;
-	}
+/* Heapify Up */
+while (new_node->parent && heap->data_cmp(new_node->data, new_node->parent->data) < 0)
+{
+/* Swap data between current node and parent */
+void *temp = new_node->data;
+new_node->data = new_node->parent->data;
+new_node->parent->data = temp;
+
+new_node = new_node->parent;
+}
+
+return (new_node);
 }

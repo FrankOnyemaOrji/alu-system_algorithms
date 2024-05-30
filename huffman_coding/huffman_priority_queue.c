@@ -2,58 +2,60 @@
 #include "heap.h"
 
 /**
- * freeNestedNode - meant to be used as free_data parameter to heap_delete;
- *   frees memory allocated for a binary_tree_node_t node containing a
- *   symbol_t struct
+ * freq_cmp - Compares the frequencies of two symbols for heap ordering.
  *
- * @data: void pointer intended to be cast into binary_tree_node_t pointer
+ * @fqa: Pointer to the first symbol.
+ * @fqb: Pointer to the second symbol.
+ *
+ * Return: The difference in frequencies (f1 - f2).
  */
-void freeNestedNode(void *data)
+int freq_cmp(void *fqa, void *fqb)
 {
-	binary_tree_node_t *a_data = NULL;
-	symbol_t *b_data = NULL;
+	symbol_t *symla, *symlb;
+	binary_tree_node_t *nodea, *nodeb;
 
-	a_data = (binary_tree_node_t *)data;
+	nodea = (binary_tree_node_t *)fqa;
+	nodeb = (binary_tree_node_t *)fqb;
+	symla = (symbol_t *)nodea->data;
+	symlb = (symbol_t *)nodeb->data;
 
-	if (a_data)
-	{
-		b_data = (symbol_t *)(a_data->data);
-
-		if (b_data)
-			free(b_data);
-
-		free(a_data);
-	}
+	return ((int)symla->freq - (int)symlb->freq);
 }
 
 /**
- * huffman_tree - function that builds the Huffman tree
+ * huffman_priority_queue - creates a priority queue
+ *							for the Huffman coding algorithm
  * @data: array of characters of size size
  * @freq: array containing the associated frequencies (of size size too)
  * @size: size of queue
- * Return: pointer to the root node of the Huffman tree, or NULL if it fails
+ * Return: pointer to the created min heap (also called priority queue)
  */
-binary_tree_node_t *huffman_tree(char *data, size_t *freq, size_t size)
+heap_t *huffman_priority_queue(char *data, size_t *freq, size_t size)
 {
-	heap_t *priority_queue;
-	binary_tree_node_t *root_node;
+	symbol_t *syml = NULL;
+	heap_t *new_heap = NULL;
+	binary_tree_node_t *new_node = NULL;
+	size_t index = 0;
 
-	setbuf(stdout, NULL);
+	new_heap = heap_create(freq_cmp);
 
-	priority_queue = huffman_priority_queue(data, freq, size);
-
-	if (!priority_queue)
+	if (!new_heap)
 		return (NULL);
+	new_heap->root = NULL;
 
-	while (priority_queue->size > 1)
+	while (index < size)
 	{
-		if (!huffman_extract_and_insert(priority_queue))
+		syml = symbol_create(data[index], freq[index]);
+		new_node = binary_tree_node(NULL, syml);
+
+		if (!heap_insert(new_heap, new_node))
 		{
+			free(syml);
+			free(new_node);
 			return (NULL);
 		}
+		index++;
 	}
 
-	root_node = heap_extract(priority_queue);
-	heap_delete(priority_queue, NULL);
-	return (root_node);
+	return (new_heap);
 }

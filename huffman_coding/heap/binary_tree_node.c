@@ -1,18 +1,27 @@
+#include <stdlib.h>
 #include "heap.h"
 
 /**
- * binary_tree_node - creates new node in binary tree
- * @parent: pointer to parent or NULL
- * @data: void pointer to data for this node
- * Return: pointer to new node or NULL on error
+ *binary_tree_node - function that creates a generic Binary tree node
+ *
+ * @parent: pointer to the parent node.
+ * @data: The data to be stored in the node.
+ * Return: A pointer to the created binary_tree_node, or NULL if it fails.
  */
 binary_tree_node_t *binary_tree_node(binary_tree_node_t *parent, void *data)
 {
-	binary_tree_node_t *node = calloc(1, sizeof(*node));
 
-	if (!node)
+	binary_tree_node_t *new_node = malloc(sizeof(binary_tree_node_t));
+
+	if (new_node == NULL)
+	{
 		return (NULL);
-	node->parent = parent;
-	node->data = data;
-	return (node);
+	}
+
+	new_node->parent = parent;
+	new_node->data = data;
+	new_node->left = NULL;
+	new_node->right = NULL;
+
+	return (new_node);
 }
