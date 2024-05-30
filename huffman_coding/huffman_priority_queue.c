@@ -1,51 +1,59 @@
 #include "huffman.h"
+#include "heap.h"
 
 /**
- * compare_frequencies - program that compares the frequencies
- * of two symbol nodes
- * the purpose of this comparison is to determine the order in which symbols
- * should be arranged or sorted based on their frequencies
- * @p1: a pointer to the first symbol node
- * @p2: a pointer to the second symbol node
- * Return: the difference between the frequencies of the symbols
+ * freeNestedNode - meant to be used as free_data parameter to heap_delete;
+ *   frees memory allocated for a binary_tree_node_t node containing a
+ *   symbol_t struct
+ *
+ * @data: void pointer intended to be cast into binary_tree_node_t pointer
  */
-
-int compare_frequencies(void *p1, void *p2)
+void freeNestedNode(void *data)
 {
-	binary_tree_node_t *node1, *node2;
-	symbol_t *symbol1, *symbol2;
+	binary_tree_node_t *a_data = NULL;
+	symbol_t *b_data = NULL;
 
-	node1 = (binary_tree_node_t *)p1;
-	node2 = (binary_tree_node_t *)p2;
-	symbol1 = (symbol_t *)node1->data;
-	symbol2 = (symbol_t *)node2->data;
+	a_data = (binary_tree_node_t *)data;
 
-	return (symbol1->freq - symbol2->freq);
+	if (a_data)
+	{
+		b_data = (symbol_t *)(a_data->data);
+
+		if (b_data)
+			free(b_data);
+
+		free(a_data);
+	}
 }
 
 /**
- * huffman_priority_queue - program that creates a min-heap priority queue
- * of symbols
- * @data: an array of characters
- * @freq: an array of frequencies associated with characters
- * @size: the size of the arrays
- * Return: a min-heapified version of the arrays
+ * huffman_tree - function that builds the Huffman tree
+ * @data: array of characters of size size
+ * @freq: array containing the associated frequencies (of size size too)
+ * @size: size of queue
+ * Return: pointer to the root node of the Huffman tree, or NULL if it fails
  */
-
-heap_t *huffman_priority_queue(char *data, size_t *freq, size_t size)
+binary_tree_node_t *huffman_tree(char *data, size_t *freq, size_t size)
 {
-	heap_t *heap;
-	symbol_t *symbol;
-	binary_tree_node_t *node;
-	size_t i;
+	heap_t *priority_queue;
+	binary_tree_node_t *root_node;
 
-	heap = heap_create(compare_frequencies);
+	setbuf(stdout, NULL);
 
-	for (i = 0; i < size; i++)
+	priority_queue = huffman_priority_queue(data, freq, size);
+
+	if (!priority_queue)
+		return (NULL);
+
+	while (priority_queue->size > 1)
 	{
-		symbol = symbol_create(data[i], freq[i]);
-		node = binary_tree_node(NULL, symbol);
-		node = heap_insert(heap, node);
+		if (!huffman_extract_and_insert(priority_queue))
+		{
+			return (NULL);
+		}
 	}
-	return (heap);
+
+	root_node = heap_extract(priority_queue);
+	heap_delete(priority_queue, NULL);
+	return (root_node);
 }
