@@ -8,8 +8,8 @@
  * @y: Y coordinate of the position to check
  * @rows: Number of rows
  * @cols: Number of columns
+ * @author: Frank Onyema Orji
  * Return: 1 if it's safe, 0 if not
- * @author: Frank Onyema orji
  */
 int isValid(char **map, int **visited, int x, int y, int rows, int cols)
 {

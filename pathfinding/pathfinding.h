@@ -1,8 +1,8 @@
 /**
 * @author: Frank Onyema Orji
 */
-#ifndef PATHFINDING_H
-#define PATHFINDING_H
+#ifndef __PATHFINDING_H__
+#define __PATHFINDING_H__
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,74 +14,76 @@
 #include "queues.h"
 
 #define NUM_DIRECTIONS 4
-#define HEURISTIC(x1, y1, x2, y2)  (sqrt(pow((x2) - (x1), 2) + pow((y2) - (y1), 2)))
+#define h(x1, y1, x2, y2)  (sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2)))
 
 /**
- * enum Direction - Enumeration for possible directions
- * @RIGHT: Move right (east)
- * @DOWN: Move down (south)
- * @LEFT: Move left (west)
- * @UP: Move up (north)
+ * enum direction_s - Defines directions to move
+ * @RIGHT: Move to the right (east)
+ * @BOTTOM: Move downwards (south)
+ * @LEFT: Move to the left (west)
+ * @TOP: Move upwards (north)
  */
-typedef enum Direction
+enum direction_s
 {
-    RIGHT,
-    DOWN,
-    LEFT,
-    UP
-} Direction;
+	RIGHT,
+	BOTTOM,
+	LEFT,
+	TOP
+};
 
 /**
- * struct Point - Structure representing a point with x and y coordinates
+ * struct point_s - Structure to store coordinates
+ *
  * @x: X coordinate
  * @y: Y coordinate
  */
-typedef struct Point
+typedef struct point_s
 {
-    int x;
-    int y;
-} Point;
+	int x; /**< X coordinate */
+	int y; /**< Y coordinate */
+} point_t;
+
 
 /**
- * backtracking_array - Finds a path in a 2D map using backtracking
- * @map: 2D array representing the map
+ * backtracking_array - Finds a path from start to target in a 2D array using backtracking.
+ * @map: 2D array representing the map (0 is walkable, 1 is blocked)
  * @rows: Number of rows in the map
  * @cols: Number of columns in the map
- * @start: Starting point
- * @target: Target point
- *
- * Return: Queue containing the path from start to target
+ * @start: Starting coordinates
+ * @target: Target coordinates
+ * Return: Queue representing the path, or NULL if no path is found
  */
-queue_t *backtracking_array(char **map, int rows, int cols, const Point *start, const Point *target);
+queue_t *backtracking_array(char **map, int rows, int cols,
+							point_t const *start, point_t const *target);
 
 /**
- * backtracking_graph - Finds a path in a graph using backtracking
- * @graph: Graph structure
+ * backtracking_graph - Finds a path from start to target in a graph using backtracking.
+ * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
- *
- * Return: Queue containing the path from start to target
+ * Return: Queue representing the path, or NULL if no path is found
  */
-queue_t *backtracking_graph(graph_t *graph, const vertex_t *start, const vertex_t *target);
+queue_t *backtracking_graph(graph_t *graph, vertex_t const *start,
+							vertex_t const *target);
 
 /**
- * dijkstra_graph - Finds the shortest path in a graph using Dijkstra's algorithm
- * @graph: Graph structure
+ * dijkstra_graph - Finds a path from start to target in a graph using Dijkstra's algorithm.
+ * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
- *
- * Return: Queue containing the shortest path from start to target
+ * Return: Queue representing the path, or NULL if no path is found
  */
-queue_t *dijkstra_graph(graph_t *graph, const vertex_t *start, const vertex_t *target);
+queue_t *dijkstra_graph(graph_t *graph, vertex_t const *start,
+						vertex_t const *target);
 
 /**
- * a_star_graph - Finds the shortest path in a graph using the A* algorithm
- * @graph: Graph structure
+ * a_star_graph - Finds a path from start to target in a graph using A* algorithm.
+ * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
- *
- * Return: Queue containing the shortest path from start to target
+ * Return: Queue representing the path, or NULL if no path is found
  */
-queue_t *a_star_graph(graph_t *graph, const vertex_t *start, const vertex_t *target);
+queue_t *a_star_graph(graph_t *graph, vertex_t const *start,
+					  vertex_t const *target);
 
-#endif /* PATHFINDING_H */
+#endif /* __PATHFINDING_H__ */

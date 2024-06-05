@@ -21,11 +21,12 @@ static void print_free_path(queue_t *path)
 }
 
 /**
- * main - Backtracking using an array to demonstrate its inefficiency. 
- * The target point is down-right from the starting point, but since 
- * we first check the right cell, then top, then left, then bottom, 
- * our algorithm will almost traverse the entire maze before finding a path.
- * Don't use backtracking. Backtracking is inefficient.
+ * main - Backtracking using an array. Here the array is chosen to demonstrate
+ * that Backtracking is a really bad algorithm. The target point is just
+ * down-right from the starting point, but since we first check the right cell,
+ * then top, then left, then bottom, our algo will almost go through the whole
+ * maze before finding a path.
+ * Don't use backtracking. Backtracking is bad.
  */
 int main(void)
 {
@@ -60,10 +61,10 @@ int main(void)
     if (!path)
     {
         fprintf(stderr, "Failed to retrieve path\n");
-        return EXIT_FAILURE;
+        return (EXIT_FAILURE);
     }
 
     print_free_path(path);
 
-    return EXIT_SUCCESS;
+    return (EXIT_SUCCESS);
 }
