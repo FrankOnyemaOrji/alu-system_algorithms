@@ -12,12 +12,13 @@
  * g_score, or NULL if none found.
  */
 vertex_t *get_min_g_score(graph_t *graph, size_t *g_score, size_t *visited,
-			  size_t *index)
+size_t *index)
 {
 	size_t min = ULONG_MAX;
 	vertex_t *min_vertex = NULL;
+	size_t i;
 
-	for (size_t i = 0; i < graph->nb_vertices; i++)
+	for (i = 0; i < graph->nb_vertices; i++)
 	{
 		if (!visited[i] && g_score[i] < min)
 		{
@@ -33,14 +34,13 @@ vertex_t *get_min_g_score(graph_t *graph, size_t *g_score, size_t *visited,
 /**
  * reconstruct_path - Inserts vertices into the queue to form the path.
  *
- * @graph: Pointer to the graph with vertices.
  * @path: Pointer to the path queue.
  * @came_from: Array of vertices representing the path.
  * @start: Pointer to the start vertex.
  * @target: Pointer to the target vertex.
  */
-void reconstruct_path(graph_t *graph, queue_t *path, vertex_t **came_from,
-		      const vertex_t *start, const vertex_t *target)
+void reconstruct_path(queue_t *path, vertex_t **came_from,
+const vertex_t *start, const vertex_t *target)
 {
 	const vertex_t *current = target;
 
@@ -71,8 +71,8 @@ void reconstruct_path(graph_t *graph, queue_t *path, vertex_t **came_from,
  * @idx: Current index.
  */
 void recursive_a_star(graph_t *graph, size_t *visited, vertex_t **came_from,
-		      const vertex_t *start, const vertex_t *target,
-		      size_t *f_score, size_t *g_score, size_t idx)
+const vertex_t *start, const vertex_t *target,
+size_t *f_score, size_t *g_score, size_t idx)
 {
 	vertex_t *current = get_min_g_score(graph, f_score, visited, &idx);
 
@@ -92,7 +92,7 @@ void recursive_a_star(graph_t *graph, size_t *visited, vertex_t **came_from,
 			came_from[neighbor->index] = current;
 			g_score[neighbor->index] = tentative_g_score;
 			f_score[neighbor->index] = g_score[neighbor->index] +
-				h(neighbor->x, neighbor->y, target->x, target->y);
+			h(neighbor->x, neighbor->y, target->x, target->y);
 		}
 
 		edge = edge->next;
@@ -100,7 +100,7 @@ void recursive_a_star(graph_t *graph, size_t *visited, vertex_t **came_from,
 
 	visited[current_idx] = 1;
 	recursive_a_star(graph, visited, came_from,
-			 start, target, f_score, g_score, idx);
+start, target, f_score, g_score, idx);
 }
 
 /**
@@ -125,7 +125,7 @@ const vertex_t *target)
 	queue_t *path_queue = NULL;
 
 	if (initialize_a_star(graph, &visited, &came_from,
-			      &f_score, &g_score, start, target) == -1)
+&f_score, &g_score, start, target) == -1)
 		return (NULL);
 
 	path_queue = queue_create();
@@ -140,7 +140,7 @@ const vertex_t *target)
 
 	recursive_a_star(graph, visited, came_from, start, target,
 f_score, g_score, 0);
-	reconstruct_path(graph, path_queue, came_from, start, target);
+	reconstruct_path(path_queue, came_from, start, target);
 
 	free(visited);
 	free(f_score);
