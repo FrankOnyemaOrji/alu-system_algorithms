@@ -120,15 +120,14 @@ void recursive_dijkstra(graph_t *graph, size_t *distance, size_t *visited,
 /**
  * init_dijkstra - Initializes Dijkstra's algorithm.
  * @graph: Pointer to the graph.
- * @start: Pointer to the start vertex.
  * @distance: Pointer to the array of distances.
  * @visited: Pointer to the array of visited vertices.
  * @path_via: Pointer to the array of path vertices.
  *
  * Return: 0 on success, 1 on failure.
  */
-int init_dijkstra(graph_t *graph, vertex_t const *start, size_t **distance,
-				  size_t **visited, vertex_t ***path_via)
+int init_dijkstra(graph_t *graph, size_t **distance, size_t **visited,
+				  vertex_t ***path_via)
 {
 	size_t i;
 
@@ -177,7 +176,7 @@ vertex_t const *target)
 	if (!graph || !start || !target)
 		return (NULL);
 
-	if (init_dijkstra(graph, start, &distance, &visited, &path_via) != 0)
+	if (init_dijkstra(graph, &distance, &visited, &path_via) != 0)
 		return (NULL);
 
 	queue = queue_create();
