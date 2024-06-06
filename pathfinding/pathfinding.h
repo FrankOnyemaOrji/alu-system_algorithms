@@ -1,6 +1,3 @@
-/**
-* @author: Frank Onyema Orji
-*/
 #ifndef __PATHFINDING_H__
 #define __PATHFINDING_H__
 
@@ -22,6 +19,7 @@
  * @BOTTOM: Move downwards (south)
  * @LEFT: Move to the left (west)
  * @TOP: Move upwards (north)
+ * author: Frank Onyema Orji
  */
 enum direction_s
 {
@@ -45,7 +43,8 @@ typedef struct point_s
 
 
 /**
- * backtracking_array - Finds a path from start to target in a 2D array using backtracking.
+ * backtracking_array - Finds a path from start ---
+ * to target in a 2D array using backtracking.
  * @map: 2D array representing the map (0 is walkable, 1 is blocked)
  * @rows: Number of rows in the map
  * @cols: Number of columns in the map
@@ -57,7 +56,8 @@ queue_t *backtracking_array(char **map, int rows, int cols,
 							point_t const *start, point_t const *target);
 
 /**
- * backtracking_graph - Finds a path from start to target in a graph using backtracking.
+ * backtracking_graph - Finds a path from start----
+ * to target in a graph using backtracking.
  * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
@@ -67,7 +67,8 @@ queue_t *backtracking_graph(graph_t *graph, vertex_t const *start,
 							vertex_t const *target);
 
 /**
- * dijkstra_graph - Finds a path from start to target in a graph using Dijkstra's algorithm.
+ * dijkstra_graph - Finds a path from start----
+ * to target in a graph using Dijkstra's algorithm.
  * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
@@ -77,7 +78,8 @@ queue_t *dijkstra_graph(graph_t *graph, vertex_t const *start,
 						vertex_t const *target);
 
 /**
- * a_star_graph - Finds a path from start to target in a graph using A* algorithm.
+ * a_star_graph - Finds a path from start----
+ * to target in a graph using A* algorithm.
  * @graph: Graph representing the map
  * @start: Starting vertex
  * @target: Target vertex
